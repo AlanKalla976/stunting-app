@@ -21,7 +21,6 @@ class SawService
         $totalKriteria = $kriteriaList->count();
 
         // Hanya ambil balita yang SUDAH dinilai lengkap
-        // (jumlah nilai yang tersimpan == jumlah total kriteria)
         $balitaList = Balita::withCount('nilai')
             ->having('nilai_count', '=', $totalKriteria)
             ->get();
@@ -30,14 +29,23 @@ class SawService
             return [];
         }
 
+        $idBalitaList = $balitaList->pluck('id_balita');
+
+        // Ambil SEMUA nilai sekaligus dalam satu query
+        $semuaNilai = Nilai::whereIn('id_balita', $idBalitaList)
+            ->whereIn('id_kriteria', $kriteriaList->pluck('id_kriteria'))
+            ->get()
+            ->groupBy('id_balita');
+
         // 1. Susun matriks keputusan: [id_balita][id_kriteria] = nilai
         $matriks = [];
         foreach ($balitaList as $balita) {
+            $nilaiBalita = $semuaNilai->get($balita->id_balita, collect())
+                ->keyBy('id_kriteria');
+
             foreach ($kriteriaList as $kriteria) {
-                $nilai = Nilai::where('id_balita', $balita->id_balita)
-                    ->where('id_kriteria', $kriteria->id_kriteria)
-                    ->value('nilai');
-                $matriks[$balita->id_balita][$kriteria->id_kriteria] = $nilai ?? 0;
+                $nilai = $nilaiBalita->get($kriteria->id_kriteria)?->nilai;
+                $matriks[$balita->id_balita][$kriteria->id_kriteria] = (float) ($nilai ?? 0);
             }
         }
 
@@ -49,9 +57,11 @@ class SawService
                 $maxMin[$kriteria->id_kriteria] = ['max' => 1, 'min' => 1];
                 continue;
             }
+            $maxNilai = max($kolom);
+            $minNilai = min($kolom);
             $maxMin[$kriteria->id_kriteria] = [
-                'max' => max($kolom) ?: 1,
-                'min' => min($kolom) ?: 1,
+                'max' => $maxNilai > 0 ? $maxNilai : 1,
+                'min' => $minNilai > 0 ? $minNilai : 1,
             ];
         }
 
@@ -60,10 +70,12 @@ class SawService
         foreach ($matriks as $idBalita => $baris) {
             foreach ($baris as $idKriteria => $nilai) {
                 $kriteria = $kriteriaList->firstWhere('id_kriteria', $idKriteria);
-                if ($nilai == 0) {
+
+                if ($nilai <= 0) {
                     $normalisasi[$idBalita][$idKriteria] = 0;
                     continue;
                 }
+
                 if ($kriteria->jenis === 'benefit') {
                     $normalisasi[$idBalita][$idKriteria] = $nilai / $maxMin[$idKriteria]['max'];
                 } else { // cost
@@ -72,31 +84,44 @@ class SawService
             }
         }
 
-        // 4 & 5. Kalikan bobot, jumlahkan -> nilai preferensi
+        // 4 & 5. Kalikan bobot, jumlahkan -> nilai preferensi (Skor V)
         $preferensi = [];
         foreach ($normalisasi as $idBalita => $baris) {
             $total = 0;
             foreach ($baris as $idKriteria => $rNilai) {
-                $bobot = $kriteriaList->firstWhere('id_kriteria', $idKriteria)->bobot;
+                $bobot = (float) $kriteriaList->firstWhere('id_kriteria', $idKriteria)->bobot;
                 $total += $bobot * $rNilai;
             }
-            $preferensi[$idBalita] = $total;
+            $preferensi[$idBalita] = round($total, 4);
         }
 
-        // 6. Ranking (nilai tertinggi = risiko tertinggi = ranking 1)
+        // 6. RANKING: NILAI BESAR = RISIKO TERTINGGI = RANKING 1
+        // arsort() mengurutkan array dari terbesar ke terkecil
         arsort($preferensi);
-        $ranking = 1;
+
         $hasilAkhir = [];
+        $posisi = 0;
+        $rankingSaatIni = 0;
+        $nilaiTerakhir = null;
+
         foreach ($preferensi as $idBalita => $nilaiPreferensi) {
+            $posisi++;
+
+            // Standard Competition Ranking (1, 1, 3, 4...)
+            if ($nilaiPreferensi !== $nilaiTerakhir) {
+                $rankingSaatIni = $posisi;
+                $nilaiTerakhir = $nilaiPreferensi;
+            }
+
             $hasilAkhir[] = [
                 'id_balita' => $idBalita,
-                'nilai_preferensi' => round($nilaiPreferensi, 4),
-                'ranking' => $ranking++,
+                'nilai_preferensi' => $nilaiPreferensi,
+                'ranking' => $rankingSaatIni,
             ];
         }
 
-       // Simpan ke tabel hasil
-        Hasil::truncate(); // hapus SEMUA hasil lama, bukan cuma hari ini
+        // Simpan ke DB
+        Hasil::truncate();
         foreach ($hasilAkhir as $item) {
             Hasil::create([
                 'id_balita' => $item['id_balita'],
@@ -111,9 +136,10 @@ class SawService
 
     public static function kategoriRisiko(float $nilai): string
     {
+        // Kategori sesuai batas skor pada foto
         return match (true) {
             $nilai >= 0.7 => 'Risiko Tinggi',
-            $nilai >= 0.4 => 'Risiko Sedang',
+            $nilai >= 0.5 => 'Risiko Sedang',
             default => 'Risiko Rendah',
         };
     }

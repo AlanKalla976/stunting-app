@@ -44,6 +44,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        Route::get('/balita/cetak/pdf', [BalitaController::class, 'cetak'])->name('balita.cetak');
+
         Route::resource('balita', BalitaController::class)
             ->parameters(['balita' => 'balitum']);
 
@@ -98,6 +100,9 @@ Route::prefix('petugas')->name('petugas.')->group(function () {
             Route::get('/', [PetugasBalitaController::class, 'index'])->name('index');
             Route::get('/create', [PetugasBalitaController::class, 'create'])->name('create');
             Route::post('/', [PetugasBalitaController::class, 'store'])->name('store');
+            Route::get('/{balitum}', [PetugasBalitaController::class, 'show'])->name('show');
+            Route::get('/{balitum}/edit', [PetugasBalitaController::class, 'edit'])->name('edit');
+            Route::put('/{balitum}', [PetugasBalitaController::class, 'update'])->name('update');
         });
 
         Route::get('/hasil/cetak', [PetugasHasilController::class, 'cetak'])->name('hasil.cetak');
