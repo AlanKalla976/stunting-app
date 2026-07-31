@@ -4,40 +4,66 @@
 
 @section('content')
 <style>
+    /* Styling Tabel Utama & Font Mungil */
+    table.table-balita-petugas {
+        font-size: 0.73rem; /* Font isi tabel dipadatkan */
+    }
+
     table.table-balita-petugas > thead > tr > th {
         background-color: #3b5bfd !important;
         color: #ffffff !important;
         border: none !important;
         vertical-align: middle;
+        font-size: 0.75rem;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        white-space: nowrap;
     }
+
     table.table-balita-petugas > thead > tr > th:first-child {
-        border-top-left-radius: 12px !important;
-        border-bottom-left-radius: 12px !important;
+        border-top-left-radius: 10px !important;
+        border-bottom-left-radius: 10px !important;
     }
     table.table-balita-petugas > thead > tr > th:last-child {
-        border-top-right-radius: 12px !important;
-        border-bottom-right-radius: 12px !important;
+        border-top-right-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+    }
+
+    /* Padding Baris Tabel Utama Dipadatkan */
+    table.table-balita-petugas > tbody > tr > td {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    /* Penyesuaian Ukuran Tombol Aksi Mungil */
+    .btn-action-custom {
+        font-size: 0.68rem !important;
+        padding: 0 8px !important;
+        height: 24px !important;
+        min-width: 50px !important;
     }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold m-0" style="color:#1e2129;">Daftar Balita</h2>
-    <a href="{{ route('petugas.balita.create') }}" class="btn text-white rounded-3 px-4 py-2 fw-semibold" style="background-color:#3b5bfd;">
+    <a href="{{ route('petugas.balita.create') }}" class="btn text-white rounded-3 px-3 py-2 small fw-semibold" style="background-color:#3b5bfd; font-size:0.82rem;">
         <i class="bi bi-plus-lg me-1"></i> Tambah Balita
     </a>
 </div>
 
-<div class="card border-0 shadow-sm rounded-4 p-4">
+<div class="card border-0 shadow-sm rounded-4 p-3">
 
-    <form method="GET" class="row g-2 mb-4 align-items-end">
+    <form method="GET" class="row g-2 mb-3 align-items-end">
         <div class="col-md-4">
             <label class="form-label small fw-semibold text-secondary mb-1">Cari</label>
-            <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari nama atau alamat..." style="height:45px;">
+            <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm" placeholder="Cari nama atau alamat..." style="height:38px; font-size:0.8rem;">
         </div>
 
         <div class="col-md-3">
             <label class="form-label small fw-semibold text-secondary mb-1">Jenis Kelamin</label>
-            <select name="jenis_kelamin" class="form-select" style="height:45px;">
+            <select name="jenis_kelamin" class="form-select form-select-sm" style="height:38px; font-size:0.8rem;">
                 <option value="">Semua</option>
                 <option value="L" {{ request('jenis_kelamin') === 'L' ? 'selected' : '' }}>Laki-laki</option>
                 <option value="P" {{ request('jenis_kelamin') === 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -46,7 +72,7 @@
 
         <div class="col-md-3">
             <label class="form-label small fw-semibold text-secondary mb-1">Status Imunisasi</label>
-            <select name="status_imunisasi_dasar" class="form-select" style="height:45px;">
+            <select name="status_imunisasi_dasar" class="form-select form-select-sm" style="height:38px; font-size:0.8rem;">
                 <option value="">Semua</option>
                 <option value="Lengkap" {{ request('status_imunisasi_dasar') === 'Lengkap' ? 'selected' : '' }}>Lengkap</option>
                 <option value="Tidak Lengkap" {{ request('status_imunisasi_dasar') === 'Tidak Lengkap' ? 'selected' : '' }}>Tidak Lengkap</option>
@@ -54,14 +80,14 @@
         </div>
 
         <div class="col-md-2 d-flex gap-2">
-            <button type="submit" class="btn text-white fw-semibold w-100" style="background-color:#3b5bfd; height:45px; border-radius:8px;">
+            <button type="submit" class="btn text-white fw-semibold w-100" style="background-color:#3b5bfd; height:38px; border-radius:6px; font-size:0.8rem;">
                 Filter
             </button>
         </div>
 
         @if (request('search') || request('jenis_kelamin') || request('status_imunisasi_dasar'))
             <div class="col-12">
-                <a href="{{ route('petugas.balita.index') }}" class="small text-muted text-decoration-none">
+                <a href="{{ route('petugas.balita.index') }}" class="small text-muted text-decoration-none" style="font-size:0.75rem;">
                     <i class="bi bi-x-circle me-1"></i>Reset filter
                 </a>
             </div>
@@ -69,32 +95,32 @@
     </form>
 
     <div class="table-responsive">
-        <table class="table table-balita-petugas align-middle mb-0" style="border-collapse: separate; border-spacing: 0;">
+        <table class="table table-balita-petugas align-middle mb-0" style="border-collapse: separate; border-spacing: 0; width: 100%;">
             <thead>
                 <tr>
-                    <th class="py-3 ps-4">No</th>
-                    <th class="py-3">Nama Balita</th>
-                    <th class="py-3">Umur (Bulan)</th>
-                    <th class="py-3">JK</th>
-                    <th class="py-3">TB (cm)</th>
-                    <th class="py-3">BB (kg)</th>
-                    <th class="py-3">Alamat</th>
-                    <th class="py-3">Ekonomi</th>
-                    <th class="py-3">Sanitasi</th>
-                    <th class="py-3">Riwayat ASI</th>
-                    <th class="py-3">Imunisasi</th>
-                    <th class="py-3 pe-4 text-center">Aksi</th>
+                    <th class="py-2 ps-3" style="width: 40px;">No</th>
+                    <th class="py-2">Nama Balita</th>
+                    <th class="py-2">Umur (Bln)</th>
+                    <th class="py-2">JK</th>
+                    <th class="py-2">TB (cm)</th>
+                    <th class="py-2">BB (kg)</th>
+                    <th class="py-2">Alamat</th>
+                    <th class="py-2">Ekonomi</th>
+                    <th class="py-2">Sanitasi</th>
+                    <th class="py-2">Riwayat ASI</th>
+                    <th class="py-2">Imunisasi</th>
+                    <th class="py-2 pe-3 text-center" style="width: 110px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($balita as $index => $item)
                     <tr style="border-bottom: 1px solid #eef0f4;">
-                        <td class="ps-4 text-muted">{{ $balita->firstItem() + $index }}</td>
+                        <td class="ps-3 text-muted">{{ $balita->firstItem() + $index }}</td>
                         <td class="fw-semibold" style="color:#1e2129;">{{ $item->nama_balita }}</td>
-                        <td class="text-muted">{{ $item->umur }} bulan</td>
+                        <td class="text-muted">{{ $item->umur }} bln</td>
                         <td>
-                            <span class="badge rounded-pill px-3 py-2 fw-normal"
-                                  style="background-color: {{ $item->jenis_kelamin === 'L' ? '#e7ecff' : '#fde8e8' }}; color: {{ $item->jenis_kelamin === 'L' ? '#3b5bfd' : '#e5484d' }}; font-size:0.8rem;">
+                            <span class="badge rounded-pill px-2 py-1 fw-normal"
+                                  style="background-color: {{ $item->jenis_kelamin === 'L' ? '#e7ecff' : '#fde8e8' }}; color: {{ $item->jenis_kelamin === 'L' ? '#3b5bfd' : '#e5484d' }}; font-size:0.68rem;">
                                 {{ $item->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}
                             </span>
                         </td>
@@ -105,19 +131,21 @@
                         <td class="text-muted">{{ $item->sanitasi_lingkungan }}</td>
                         <td class="text-muted">{{ $item->riwayat_asi }}</td>
                         <td>
-                            <span class="badge rounded-pill px-3 py-2 fw-normal"
-                                  style="background-color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#e3f9e5' : '#fde8e8' }}; color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#1f9d55' : '#e5484d' }}; font-size:0.8rem;">
+                            <span class="badge rounded-pill px-2 py-1 fw-normal"
+                                  style="background-color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#e3f9e5' : '#fde8e8' }}; color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#1f9d55' : '#e5484d' }}; font-size:0.68rem;">
                                 {{ $item->status_imunisasi_dasar }}
                             </span>
                         </td>
-                        <td class="pe-4">
-                            <div class="d-flex flex-column gap-1">
+                        <td class="pe-3 text-center">
+                            <div class="d-flex align-items-center justify-content-center gap-1">
                                 <a href="{{ route('petugas.balita.show', $item->id_balita) }}"
-                                   class="btn btn-sm text-white rounded-3 px-3" style="background-color:#3b5bfd;">
+                                   class="btn btn-sm text-white rounded-3 btn-action-custom d-inline-flex align-items-center justify-content-center" 
+                                   style="background-color:#3b5bfd;">
                                     Lihat
                                 </a>
                                 <a href="{{ route('petugas.balita.edit', $item->id_balita) }}"
-                                   class="btn btn-sm text-white rounded-3 px-3" style="background-color:#f5a623;">
+                                   class="btn btn-sm text-white rounded-3 btn-action-custom d-inline-flex align-items-center justify-content-center" 
+                                   style="background-color:#f5a623;">
                                     Edit
                                 </a>
                             </div>
@@ -125,14 +153,14 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="12" class="text-center text-muted py-4">Belum ada data balita.</td>
+                        <td colspan="12" class="text-center text-muted py-3">Belum ada data balita.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-3">
         {{ $balita->appends(request()->query())->links() }}
     </div>
 </div>
