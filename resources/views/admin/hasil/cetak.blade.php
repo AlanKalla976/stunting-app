@@ -28,7 +28,7 @@
     <div class="header">
         <h2>Pemerintah Kabupaten Brebes</h2>
         <h3>Puskesmas Losari</h3>
-        <p>Jl. Jenderal Sudirman No. 12, Losari, Brebes, Jawa Tengah</p>
+        <p>Jl. Raya Losari TImur No. 44, Kecipir, Losari, Losari Kidul, Kec. Losari, Kabupaten Brebes, Jawa Tengah 52255</p>
     </div>
     <div class="title">
         <h4>Laporan Hasil Pemeringkatan Risiko Stunting Balita</h4>

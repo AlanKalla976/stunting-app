@@ -4,11 +4,18 @@
 
 @section('content')
 <style>
+    table.table-balita {
+        font-size: 0.82rem;
+    }
     table.table-balita > thead > tr > th {
         background-color: #3b5bfd !important;
         color: #ffffff !important;
         border: none !important;
         vertical-align: middle;
+        font-size: 0.78rem;
+        white-space: nowrap;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
     }
     table.table-balita > thead > tr > th:first-child {
         border-top-left-radius: 12px !important;
@@ -17,6 +24,19 @@
     table.table-balita > thead > tr > th:last-child {
         border-top-right-radius: 12px !important;
         border-bottom-right-radius: 12px !important;
+    }
+    table.table-balita > tbody > tr > td {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        vertical-align: middle;
+    }
+    table.table-balita .badge {
+        font-size: 0.72rem !important;
+        padding: 5px 10px !important;
+    }
+    table.table-balita .btn-sm {
+        font-size: 0.72rem;
+        padding: 4px 10px;
     }
 </style>
 
@@ -78,59 +98,59 @@
         <table class="table table-balita align-middle mb-0" style="border-collapse: separate; border-spacing: 0;">
             <thead>
                 <tr>
-                    <th class="py-3 ps-4">No</th>
-                    <th class="py-3">Nama Balita</th>
-                    <th class="py-3">Umur</th>
-                    <th class="py-3">JK</th>
-                    <th class="py-3">TB (cm)</th>
-                    <th class="py-3">BB (kg)</th>
-                    <th class="py-3">Alamat</th>
-                    <th class="py-3">Ekonomi</th>
-                    <th class="py-3">Sanitasi</th>
-                    <th class="py-3">Riwayat ASI</th>
-                    <th class="py-3">Imunisasi</th>
-                    <th class="py-3 pe-4 text-center">Aksi</th>
+                    <th class="py-2 ps-3">No</th>
+                    <th class="py-2">Nama</th>
+                    <th class="py-2">Umur</th>
+                    <th class="py-2">JK</th>
+                    <th class="py-2">TB</th>
+                    <th class="py-2">BB</th>
+                    <th class="py-2">Alamat</th>
+                    <th class="py-2">Ekonomi</th>
+                    <th class="py-2">Sanitasi</th>
+                    <th class="py-2">Riwayat ASI</th>
+                    <th class="py-2">Imunisasi</th>
+                    <th class="py-2 pe-3 text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($balita as $index => $item)
                     <tr style="border-bottom: 1px solid #eef0f4;">
-                        <td class="ps-4 text-muted">{{ $balita->firstItem() + $index }}</td>
+                        <td class="ps-3 text-muted">{{ $balita->firstItem() + $index }}</td>
                         <td class="fw-semibold" style="color:#1e2129;">{{ $item->nama_balita }}</td>
-                        <td class="text-muted">{{ $item->umur }} bulan</td>
+                        <td class="text-muted">{{ $item->umur }} bln</td>
                         <td>
-                            <span class="badge rounded-pill px-3 py-2 fw-normal"
-                                  style="background-color: {{ $item->jenis_kelamin === 'L' ? '#e7ecff' : '#fde8e8' }}; color: {{ $item->jenis_kelamin === 'L' ? '#3b5bfd' : '#e5484d' }}; font-size:0.8rem;">
-                                {{ $item->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}
+                            <span class="badge rounded-pill fw-normal"
+                                  style="background-color: {{ $item->jenis_kelamin === 'L' ? '#e7ecff' : '#fde8e8' }}; color: {{ $item->jenis_kelamin === 'L' ? '#3b5bfd' : '#e5484d' }};">
+                                {{ $item->jenis_kelamin }}
                             </span>
                         </td>
                         <td class="text-muted">{{ $item->tinggi_badan }}</td>
                         <td class="text-muted">{{ $item->berat_badan }}</td>
-                        <td class="text-muted">{{ $item->alamat }}</td>
+                        <td class="text-muted text-truncate" style="max-width:120px;" title="{{ $item->alamat }}">{{ $item->alamat }}</td>
                         <td class="text-muted">{{ $item->kondisi_ekonomi }}</td>
                         <td class="text-muted">{{ $item->sanitasi_lingkungan }}</td>
                         <td class="text-muted">{{ $item->riwayat_asi }}</td>
                         <td>
-                            <span class="badge rounded-pill px-3 py-2 fw-normal"
-                                  style="background-color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#e3f9e5' : '#fde8e8' }}; color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#1f9d55' : '#e5484d' }}; font-size:0.8rem;">
+                            <span class="badge rounded-pill fw-normal"
+                                  style="background-color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#e3f9e5' : '#fde8e8' }}; color: {{ $item->status_imunisasi_dasar === 'Lengkap' ? '#1f9d55' : '#e5484d' }};">
                                 {{ $item->status_imunisasi_dasar }}
                             </span>
                         </td>
-                        <td class="pe-4">
+                        <td class="pe-3">
                             <div class="d-flex flex-column gap-1">
                                 <a href="{{ route('admin.balita.show', $item->id_balita) }}"
-                                   class="btn btn-sm text-white rounded-3 px-3" style="background-color:#3b5bfd;">
+                                   class="btn btn-sm text-white rounded-3" style="background-color:#3b5bfd;">
                                     Lihat
                                 </a>
                                 <a href="{{ route('admin.balita.edit', $item->id_balita) }}"
-                                   class="btn btn-sm text-white rounded-3 px-3" style="background-color:#f5a623;">
+                                   class="btn btn-sm text-white rounded-3" style="background-color:#f5a623;">
                                     Edit
                                 </a>
                                 <form action="{{ route('admin.balita.destroy', $item->id_balita) }}" method="POST"
                                       onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm text-white rounded-3 px-3 w-100" style="background-color:#e5484d;">
+                                    <button type="submit" class="btn btn-sm text-white rounded-3 w-100" style="background-color:#e5484d;">
                                         Hapus
                                     </button>
                                 </form>

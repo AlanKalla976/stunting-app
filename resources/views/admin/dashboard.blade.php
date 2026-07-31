@@ -73,7 +73,7 @@
         <div class="card card-custom border-0 text-white p-3" style="background-color:#e5484d;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="mb-1 text-uppercase fw-semibold" style="font-size: 0.75rem; opacity: 0.85;">Risiko Tinggi (&gt;= 0.7)</h6>
+                    <h6 class="mb-1 text-uppercase fw-semibold" style="font-size: 0.75rem; opacity: 0.85;">Risiko Tinggi</h6>
                     <h2 class="m-0 fw-bold">{{ $jumlahTinggi }}</h2>
                 </div>
                 <i class="bi bi-exclamation-triangle-fill fs-1" style="opacity: 0.5;"></i>
@@ -85,7 +85,7 @@
         <div class="card card-custom border-0 text-white p-3" style="background-color:#f5a623;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="mb-1 text-uppercase fw-semibold" style="font-size: 0.75rem; opacity: 0.85;">Risiko Sedang (0.4 - 0.7)</h6>
+                    <h6 class="mb-1 text-uppercase fw-semibold" style="font-size: 0.75rem; opacity: 0.85;">Risiko Sedang</h6>
                     <h2 class="m-0 fw-bold">{{ $jumlahSedang }}</h2>
                 </div>
                 <i class="bi bi-exclamation-circle-fill fs-1" style="opacity: 0.5;"></i>
@@ -97,7 +97,7 @@
         <div class="card card-custom border-0 text-white p-3" style="background-color:#2e9e5b;">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="mb-1 text-uppercase fw-semibold" style="font-size: 0.75rem; opacity: 0.85;">Risiko Rendah (&lt; 0.4)</h6>
+                    <h6 class="mb-1 text-uppercase fw-semibold" style="font-size: 0.75rem; opacity: 0.85;">Risiko Rendah</h6>
                     <h2 class="m-0 fw-bold">{{ $jumlahRendah }}</h2>
                 </div>
                 <i class="bi bi-check-circle-fill fs-1" style="opacity: 0.5;"></i>
