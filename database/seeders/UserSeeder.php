@@ -10,23 +10,32 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('users')->insert([
+        $users = [
             [
                 'name' => 'Administrator',
                 'email' => 'admin@stunting.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('admin123'),
                 'role' => 'admin',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'name' => 'Petugas Puskesmas',
                 'email' => 'petugas@stunting.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('petugas123'),
                 'role' => 'petugas',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($users as $user) {
+            DB::table('users')->updateOrInsert(
+                ['email' => $user['email']], // kondisi pencarian (unique key)
+                [
+                    'name' => $user['name'],
+                    'password' => $user['password'],
+                    'role' => $user['role'],
+                    'updated_at' => now(),
+                    'created_at' => now(), // hanya dipakai jika insert baru
+                ]
+            );
+        }
     }
 }
