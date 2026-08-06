@@ -55,16 +55,15 @@ class PetugasAuthController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        User::create([
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'password' => $validated['password'],
             'role'     => 'petugas',
         ]);
 
-        Auth::guard('petugas')->login($user);
-
-        return redirect()->route('petugas.dashboard');
+        return redirect()->route('petugas.login')
+            ->with('success', 'Registrasi berhasil. Silakan login dengan akun Anda.');
     }
 
     public function logout(Request $request)
